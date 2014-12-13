@@ -1,3 +1,5 @@
+<%@page import="com.model.UserBeanCl"%>
+<%@page import="com.model.ConnDB"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.Connection"%>
@@ -14,33 +16,14 @@
 	<%
 		String name = request.getParameter("name");
 		String password = request.getParameter("password");
-		HttpSession mySession = request.getSession();
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection ct = DriverManager.getConnection("jdbc:mysql://localhost:8889/blog", "root", "root");
-		Statement st = ct.createStatement();
-		ResultSet rs = st.executeQuery("select pass from blog.users where account ='" + name + "'");
-		if(rs.next()){
-			String pass = rs.getString(1);
-			if(pass.equals(password)){
-				response.sendRedirect("success.jsp?name="+name);
-			}else{
-				response.sendRedirect("login.jsp?errorCode = 1");
-			}
+		
+		UserBeanCl ubc = new UserBeanCl();
+		
+		if(ubc.checkUser(name, password)){
+			response.sendRedirect("success.jsp");
 		}else{
-				response.sendRedirect("login.jsp?errorCode = 2");
+			response.sendRedirect("login.jsp");
 		}
-		/*
-		if(name.equals("admin")){
-			if(password.equals("password")){
-				mySession.setAttribute("name", name);
-				response.sendRedirect("success.jsp?name="+name);
-			}else{
-				response.sendRedirect("faild.jsp");
-			}
-		}else{
-			response.sendRedirect("faild.jsp");
-		}
-		*/
 	%>
 </body>
 </html>
